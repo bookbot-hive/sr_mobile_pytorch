@@ -21,14 +21,14 @@ class Trainer:
         seed_everything(training_args["seed"])
 
         self.train_loader = DataLoader(
-            train_dataset,
-            training_args["train_batch_size"],
-            collate_fn=self.collate_fn,
-            shuffle=True,
+            train_dataset, training_args["train_batch_size"], shuffle=True,
         )
 
         self.test_loader = DataLoader(
-            test_dataset, training_args["test_batch_size"], shuffle=False
+            test_dataset,
+            training_args["test_batch_size"],
+            collate_fn=self.collate_fn,
+            shuffle=False,
         )
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
