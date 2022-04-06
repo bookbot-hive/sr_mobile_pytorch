@@ -1,5 +1,6 @@
 import os
 import torch
+import torch.nn.functional as F
 from torch.nn import L1Loss
 from torch.utils.data import DataLoader
 from torch.optim import Adam
@@ -20,7 +21,10 @@ class Trainer:
         seed_everything(training_args["seed"])
 
         self.train_loader = DataLoader(
-            train_dataset, training_args["train_batch_size"], shuffle=True
+            train_dataset,
+            training_args["train_batch_size"],
+            collate_fn=self.collate_fn,
+            shuffle=True,
         )
 
         self.test_loader = DataLoader(
@@ -96,6 +100,29 @@ class Trainer:
             test_psnr = total_psnr / len(self.test_loader)
 
             return test_loss, test_psnr
+
+    def collate_fn(self, batch):
+        lr, hr, = zip(*batch)
+
+        max_lr_shape = max([t.shape for t in lr])
+        max_hr_shape = max([t.shape for t in hr])
+
+        pad_fn = lambda input, new_shape: F.pad(
+            input=input,
+            pad=(
+                0,
+                new_shape[2] - input.shape[2],
+                0,
+                new_shape[1] - input.shape[1],
+                0,
+                0,
+            ),
+        )
+
+        lr_padded = torch.stack([pad_fn(torch.tensor(t), max_lr_shape) for t in lr])
+        hr_padded = torch.stack([pad_fn(torch.tensor(t), max_hr_shape) for t in hr])
+
+        return lr_padded, hr_padded
 
     def report_results(self, train_loss, test_loss, test_psnr, step):
         wandb.log(
