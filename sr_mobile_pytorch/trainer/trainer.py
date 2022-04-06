@@ -67,7 +67,7 @@ class Trainer:
                 self.scheduler.step()
 
             train_loss = epoch_loss / len(self.train_loader)
-            test_loss, test_psnr = self.evaluate(epoch)
+            test_loss, test_psnr = self.evaluate()
 
             self.save_best_model(test_loss, test_psnr)
             self.report_results(train_loss, test_loss, test_psnr, epoch + 1)
