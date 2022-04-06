@@ -24,7 +24,6 @@ class Trainer:
             batch_size=training_args["train_batch_size"],
             shuffle=True,
             num_workers=training_args["num_workers"],
-            pin_memory=True,
         )
 
         self.test_loader = DataLoader(
@@ -32,7 +31,6 @@ class Trainer:
             batch_size=1,
             shuffle=False,
             num_workers=training_args["num_workers"],
-            pin_memory=True,
         )
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
