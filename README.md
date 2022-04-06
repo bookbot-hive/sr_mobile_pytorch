@@ -7,12 +7,12 @@ An unofficial PyTorch port of [NJU-Jet/SR_Mobile_Quantization](https://github.co
 ```bash
 git clone https://github.com/w11wo/sr_mobile_pytorch.git
 cd sr_mobile_pytorch
-pip install -r requirements.txt
+pip install .
 ```
 
 ## Training
 
-Modify file paths, config, and training arguments in `sr_mobile_pytorch/config.py`.
+Modify file paths, config, and training arguments in `sr_mobile_pytorch/config.json`.
 
 ```bash
 bash scripts/preprocess.sh

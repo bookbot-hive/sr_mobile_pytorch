@@ -1,12 +1,17 @@
 import pandas as pd
 import wandb
+import json
 
-from datasets import SuperResolutionDataset
-from trainer import Trainer
-from config import training_args, model_args
+from sr_mobile_pytorch.datasets import SuperResolutionDataset
+from sr_mobile_pytorch.trainer import Trainer
 
 
 def main():
+    with open("sr_mobile_pytorch/config.json", "r") as f:
+        config = json.load(f)
+    training_args = config["training_args"]
+    model_args = config["model_args"]
+
     wandb.init(project=training_args["project"], entity=training_args["entity"])
     wandb.config = {
         "learning_rate": training_args["learning_rate"],

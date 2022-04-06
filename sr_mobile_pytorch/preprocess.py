@@ -2,10 +2,9 @@ import pandas as pd
 import cv2
 import random
 import os
+import json
 from glob import glob
 from tqdm.auto import tqdm
-
-from config import training_args
 
 
 def train_test_split(df, test_size=0.1):
@@ -30,6 +29,10 @@ def train_test_split(df, test_size=0.1):
 
 
 def main():
+    with open("sr_mobile_pytorch/config.json", "r") as f:
+        config = json.load(f)
+    training_args = config["training_args"]
+
     train_LR = sorted(glob(f"{training_args['data_lr']}/*"))
     train_HR = sorted(glob(f"{training_args['data_hr']}/*"))
 

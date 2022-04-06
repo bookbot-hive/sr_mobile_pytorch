@@ -5,13 +5,12 @@ from torch.nn import L1Loss
 from torch.utils.data import DataLoader
 from torch.optim import Adam
 from tqdm.auto import tqdm
-import logging
 import wandb
 
-from model import AnchorBasedPlainNet
-from .schedulers import get_linear_schedule_with_warmup
-from .metrics import calculate_psnr
-from .utils import seed_everything
+from sr_mobile_pytorch.model import AnchorBasedPlainNet
+from sr_mobile_pytorch.trainer.schedulers import get_linear_schedule_with_warmup
+from sr_mobile_pytorch.trainer.metrics import calculate_psnr
+from sr_mobile_pytorch.trainer.utils import seed_everything, logger
 
 
 class Trainer:
@@ -21,7 +20,10 @@ class Trainer:
         seed_everything(training_args["seed"])
 
         self.train_loader = DataLoader(
-            train_dataset, training_args["train_batch_size"], shuffle=True,
+            train_dataset,
+            training_args["train_batch_size"],
+            shuffle=True,
+            num_workers=8,
         )
 
         self.test_loader = DataLoader(
@@ -29,6 +31,7 @@ class Trainer:
             training_args["test_batch_size"],
             collate_fn=self.collate_fn,
             shuffle=False,
+            num_workers=8,
         )
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -49,7 +52,6 @@ class Trainer:
         )
 
         self.state = {"best_psnr": None, "best_loss": None}
-        self.logger = logging.getLogger(training_args["project"])
         wandb.watch(self.model)
 
     def fit(self):
@@ -76,7 +78,7 @@ class Trainer:
             self.save_best_model(test_loss, test_psnr)
             self.report_results(train_loss, test_loss, test_psnr, epoch + 1)
 
-            self.logger.info(
+            logger.info(
                 "Epoch: {epoch:4} | Train Loss: {train_loss:.4f} | Test Loss: {test_loss:.4f} | PSNR: {test_psnr:.2f}"
             )
 
