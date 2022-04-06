@@ -27,11 +27,7 @@ class Trainer:
         )
 
         self.test_loader = DataLoader(
-            test_dataset,
-            training_args["test_batch_size"],
-            # collate_fn=self.collate_fn,
-            shuffle=False,
-            num_workers=training_args["num_workers"],
+            test_dataset, 1, shuffle=False, num_workers=training_args["num_workers"],
         )
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -79,7 +75,7 @@ class Trainer:
             self.report_results(train_loss, test_loss, test_psnr, epoch + 1)
 
             logger.info(
-                "Epoch: {epoch:4} | Train Loss: {train_loss:.4f} | Test Loss: {test_loss:.4f} | PSNR: {test_psnr:.2f}"
+                f"Epoch: {epoch:4} | Train Loss: {train_loss:.4f} | Test Loss: {test_loss:.4f} | PSNR: {test_psnr:.2f}"
             )
 
     def evaluate(self):
@@ -102,29 +98,6 @@ class Trainer:
             test_psnr = total_psnr / len(self.test_loader)
 
             return test_loss, test_psnr
-
-    def collate_fn(self, batch):
-        lr, hr, = zip(*batch)
-
-        max_lr_shape = max([t.shape for t in lr])
-        max_hr_shape = max([t.shape for t in hr])
-
-        pad_fn = lambda input, new_shape: F.pad(
-            input=input,
-            pad=(
-                0,
-                new_shape[2] - input.shape[2],
-                0,
-                new_shape[1] - input.shape[1],
-                0,
-                0,
-            ),
-        )
-
-        lr_padded = torch.stack([pad_fn(torch.tensor(t), max_lr_shape) for t in lr])
-        hr_padded = torch.stack([pad_fn(torch.tensor(t), max_hr_shape) for t in hr])
-
-        return lr_padded, hr_padded
 
     def report_results(self, train_loss, test_loss, test_psnr, step):
         wandb.log(
