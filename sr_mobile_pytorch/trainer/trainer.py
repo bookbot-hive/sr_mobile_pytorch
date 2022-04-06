@@ -23,7 +23,7 @@ class Trainer:
             train_dataset,
             training_args["train_batch_size"],
             shuffle=True,
-            num_workers=8,
+            num_workers=training_args["num_workers"],
         )
 
         self.test_loader = DataLoader(
@@ -31,7 +31,7 @@ class Trainer:
             training_args["test_batch_size"],
             collate_fn=self.collate_fn,
             shuffle=False,
-            num_workers=8,
+            num_workers=training_args["num_workers"],
         )
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

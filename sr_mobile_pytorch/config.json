@@ -15,6 +15,7 @@
 		"weight_decay": 0.0,
 		"warmup_ratio": 0.1,
 		"epochs": 100,
+		"num_workers": 8,
 		"seed": 42,
 		"project": "sr_mobile",
 		"entity": "w11wo",
