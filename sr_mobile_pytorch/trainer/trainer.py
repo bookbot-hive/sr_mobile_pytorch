@@ -29,7 +29,7 @@ class Trainer:
         self.test_loader = DataLoader(
             test_dataset,
             training_args["test_batch_size"],
-            collate_fn=self.collate_fn,
+            # collate_fn=self.collate_fn,
             shuffle=False,
             num_workers=training_args["num_workers"],
         )
