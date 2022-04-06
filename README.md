@@ -7,7 +7,7 @@ A PyTorch port of `NJU-Jet/SR_Mobile_Quantization`
 ```bash
 git clone https://github.com/w11wo/sr_mobile_pytorch.git
 cd sr_mobile_pytorch
-pip install .
+pip install -r requirements.txt
 ```
 
 # Customization

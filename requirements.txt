@@ -1,6 +1,6 @@
 wandb
 pandas
-cv2
+opencv-python
 tqdm
 numpy==1.19.5
 torch==1.10.2

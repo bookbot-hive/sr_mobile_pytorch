@@ -19,6 +19,6 @@ training_args = {
     "project": "sr_mobile",
     "entity": "w11wo",
     "outdir": "experiments",
-    "data_hr": "D:\\Deep Learning Datasets\\bookbot-image-assets\\ImageOptim\\data\\train_HR",
-    "data_lr": "D:\\Deep Learning Datasets\\bookbot-image-assets\\ImageOptim\\data\\train_LR\\X4",
+    "data_hr": "data/train_HR",
+    "data_lr": "data/train_LR/X4",
 }
