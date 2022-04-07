@@ -4,7 +4,7 @@ import torch.nn as nn
 from torch.nn import L1Loss
 from torch.utils.data import DataLoader
 from torch.optim import Adam
-from torchvision.models import resnet18
+from torchvision.models import resnet34
 from tqdm.auto import tqdm
 import wandb
 
@@ -42,7 +42,7 @@ class GANTrainer:
         )
         self.generator = self.generator.to(self.device)
 
-        self.discriminator = resnet18(pretrained=True)
+        self.discriminator = resnet34(pretrained=True)
         self.discriminator.fc = nn.Linear(self.discriminator.fc.in_features, 1)
         self.discriminator = self.discriminator.to(self.device)
 
@@ -92,8 +92,6 @@ class GANTrainer:
 
                 perc_loss.backward()
                 self.opt_g.step()
-
-                print(f"Perc Loss: {perc_loss.item()}, Disc Loss: {dis_loss.item()}")
 
                 epoch_perceptual_loss += perc_loss.item()
                 epoch_discriminator_loss += dis_loss.item()
