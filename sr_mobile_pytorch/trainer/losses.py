@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
-import torchvision.transforms as transforms
+
+from sr_mobile_pytorch.trainer.utils import imagenet_normalize
 
 
 class ContentLoss(nn.Module):
@@ -14,15 +15,9 @@ class ContentLoss(nn.Module):
             param.requires_grad = False
         self.model = self.model.to(device)
 
-    def preprocess_input(self, x):
-        normalize = transforms.Normalize(
-            mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
-        )
-        return normalize(x / 255.0)
-
     def forward(self, hr, sr):
-        sr = self.preprocess_input(sr)
-        hr = self.preprocess_input(hr)
+        sr = imagenet_normalize(sr)
+        hr = imagenet_normalize(hr)
         sr_features = self.model(sr)
         hr_features = self.model(hr)
         return self.mae_loss(hr_features, sr_features)

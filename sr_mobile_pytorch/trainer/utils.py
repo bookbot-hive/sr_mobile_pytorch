@@ -5,6 +5,7 @@ import numpy as np
 import logging
 import json
 from typing import Tuple, Dict, Any
+import torchvision.transforms as transforms
 
 
 def seed_everything(seed: int) -> None:
@@ -22,6 +23,14 @@ def load_config(path: str) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         config = json.load(f)
 
     return config["model_args"], config["training_args"]
+
+
+def imagenet_normalize(t: torch.Tensor):
+    t = t / 255.0
+    normalize = transforms.Normalize(
+        mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+    )
+    return normalize(t)
 
 
 handler = logging.StreamHandler()
