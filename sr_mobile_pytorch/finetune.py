@@ -3,8 +3,8 @@ import wandb
 import json
 
 from sr_mobile_pytorch.datasets import SuperResolutionDataset
-from sr_mobile_pytorch.gan_trainer import GANTrainer
-from sr_mobile_pytorch.utils import load_config
+from sr_mobile_pytorch.trainer.gan_trainer import GANTrainer
+from sr_mobile_pytorch.trainer.utils import load_config
 
 
 def main():

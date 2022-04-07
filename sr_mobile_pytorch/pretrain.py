@@ -4,7 +4,7 @@ import json
 
 from sr_mobile_pytorch.datasets import SuperResolutionDataset
 from sr_mobile_pytorch.trainer import Trainer
-from sr_mobile_pytorch.utils import load_config
+from sr_mobile_pytorch.trainer.utils import load_config
 
 
 def main():
