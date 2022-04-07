@@ -69,7 +69,6 @@ class GANTrainer:
                 lr, hr = lr.to(self.device), hr.to(self.device)
 
                 self.opt_g.zero_grad()
-                self.opt_d.zero_grad()
 
                 sr = self.generator(lr)
                 hr_out = self.discriminator(hr)
@@ -83,10 +82,11 @@ class GANTrainer:
                 con_loss = self.content_loss(hr, sr)
                 perc_loss = con_loss + 0.001 * gen_loss
 
-                perc_loss.backward(retain_graph=True)
-                dis_loss.backward(retain_graph=True)
-
+                perc_loss.backward()
                 self.opt_g.step()
+
+                self.opt_d.zero_grad()
+                dis_loss.backward()
                 self.opt_d.step()
 
                 print(perc_loss.item())
