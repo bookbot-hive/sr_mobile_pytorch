@@ -83,7 +83,6 @@ class GANTrainer:
                 self.opt_g.zero_grad()
 
                 sr_out = self.discriminator(sr)
-                print(f"SR Out: {sr_out}")
                 gen_loss = self.gan_loss.generator_loss(sr_out)
                 con_loss = self.content_loss(hr, sr)
                 perc_loss = con_loss + 0.001 * gen_loss
