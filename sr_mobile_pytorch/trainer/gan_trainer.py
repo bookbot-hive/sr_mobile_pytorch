@@ -84,6 +84,9 @@ class GANTrainer:
                 self.opt_g.step()
                 self.opt_d.step()
 
+                print(perc_loss.item())
+                print(dis_loss.item())
+
                 epoch_perceptual_loss += perc_loss.item()
                 epoch_discriminator_loss += dis_loss.item()
 
