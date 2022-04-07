@@ -15,9 +15,9 @@ from sr_mobile_pytorch.trainer.utils import seed_everything, logger
 
 class Trainer:
     def __init__(self, model_args, training_args, train_dataset, test_dataset):
+        seed_everything(training_args["seed"])
         self.model_args = model_args
         self.training_args = training_args
-        seed_everything(training_args["seed"])
 
         self.train_loader = DataLoader(
             dataset=train_dataset,
@@ -109,7 +109,7 @@ class Trainer:
         )
 
     def save_best_model(self, current_loss, current_psnr):
-        save_path = f"{self.training_args['outdir']}/weights"
+        save_path = f"{self.training_args['outdir']}/generator"
         os.makedirs(save_path, exist_ok=True)
 
         torch.save(self.model.state_dict(), f"{save_path}/model.pth")

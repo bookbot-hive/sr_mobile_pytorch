@@ -12,11 +12,12 @@ pip install .
 
 ## Training
 
-Modify file paths, config, and training arguments in `sr_mobile_pytorch/config.json`.
+Modify file paths, config, and training arguments in `sr_mobile_pytorch/config`.
 
 ```bash
 bash scripts/preprocess.sh
-bash scripts/train.sh
+bash scripts/pretrain.sh
+bash scripts/finetune.sh
 ```
 
 ## Contributors

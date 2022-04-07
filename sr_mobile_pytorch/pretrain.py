@@ -4,13 +4,12 @@ import json
 
 from sr_mobile_pytorch.datasets import SuperResolutionDataset
 from sr_mobile_pytorch.trainer import Trainer
+from sr_mobile_pytorch.utils import load_config
 
 
 def main():
-    with open("sr_mobile_pytorch/config.json", "r") as f:
-        config = json.load(f)
-    training_args = config["training_args"]
-    model_args = config["model_args"]
+    config = "sr_mobile_pytorch/config/pretraining_config.json"
+    model_args, training_args = load_config(config)
 
     wandb.init(project=training_args["project"], entity=training_args["entity"])
     wandb.config = {
