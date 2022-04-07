@@ -67,27 +67,28 @@ class GANTrainer:
             epoch_perceptual_loss, epoch_discriminator_loss = 0.0, 0.0
             for lr, hr in tqdm(self.train_loader, total=len(self.train_loader)):
                 lr, hr = lr.to(self.device), hr.to(self.device)
+                sr = self.generator(lr)
 
+                # train discriminator
+                self.opt_d.zero_grad()
+
+                hr_out = self.discriminator(hr)
+                sr_out = self.discriminator(sr.detach())
+
+                dis_loss = self.gan_loss.discriminator_loss(hr_out, sr_out)
+                dis_loss.backward()
+                self.opt_d.step()
+
+                # train generator
                 self.opt_g.zero_grad()
 
-                sr = self.generator(lr)
-                hr_out = self.discriminator(hr)
                 sr_out = self.discriminator(sr)
-
-                print(hr_out.shape, sr_out.shape)
-
                 gen_loss = self.gan_loss.generator_loss(sr_out)
-                dis_loss = self.gan_loss.discriminator_loss(hr_out, sr_out)
-
                 con_loss = self.content_loss(hr, sr)
                 perc_loss = con_loss + 0.001 * gen_loss
 
                 perc_loss.backward()
                 self.opt_g.step()
-
-                self.opt_d.zero_grad()
-                dis_loss.backward()
-                self.opt_d.step()
 
                 print(perc_loss.item())
                 print(dis_loss.item())
