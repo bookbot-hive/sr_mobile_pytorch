@@ -36,7 +36,9 @@ class GANTrainer:
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         self.generator = AnchorBasedPlainNet(**model_args)
-        self.generator.load_state_dict(training_args["generator_weights"])
+        self.generator.load_state_dict(
+            torch.load(training_args["generator_weights"]), strict=True
+        )
         self.generator = self.generator.to(self.device)
 
         self.discriminator = resnet18(pretrained=True).to(self.device)
