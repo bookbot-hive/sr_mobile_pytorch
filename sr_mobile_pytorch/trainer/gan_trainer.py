@@ -75,6 +75,8 @@ class GANTrainer:
                 hr_out = self.discriminator(hr)
                 sr_out = self.discriminator(sr)
 
+                print(hr_out.shape, sr_out.shape)
+
                 gen_loss = self.gan_loss.generator_loss(sr_out)
                 dis_loss = self.gan_loss.discriminator_loss(hr_out, sr_out)
 
