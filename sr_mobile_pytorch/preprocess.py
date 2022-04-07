@@ -33,6 +33,8 @@ def main():
         config = json.load(f)
     training_args = config["training_args"]
 
+    random.seed(training_args["seed"])
+
     train_LR = sorted(glob(f"{training_args['data_lr']}/*"))
     train_HR = sorted(glob(f"{training_args['data_hr']}/*"))
 
