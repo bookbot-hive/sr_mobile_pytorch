@@ -31,7 +31,7 @@ class ContentLoss(nn.Module):
 
 class GANLoss:
     def __init__(self):
-        self.bce_loss = nn.BCELoss()
+        self.bce_loss = nn.BCEWithLogitsLoss()
 
     def generator_loss(self, sr_out):
         return self.bce_loss(torch.ones_like(sr_out), sr_out)
