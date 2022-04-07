@@ -28,10 +28,9 @@ class GANLoss:
         self.bce_loss = nn.BCEWithLogitsLoss()
 
     def generator_loss(self, sr_out):
-        return self.bce_loss(torch.ones_like(sr_out), sr_out)
+        return self.bce_loss(sr_out, torch.ones_like(sr_out))
 
     def discriminator_loss(self, hr_out, sr_out):
         hr_loss = self.bce_loss(hr_out, torch.ones_like(hr_out))
         sr_loss = self.bce_loss(sr_out, torch.zeros_like(sr_out))
-        print(f"hr loss: {hr_loss}, sr loss: {sr_loss}")
         return hr_loss + sr_loss

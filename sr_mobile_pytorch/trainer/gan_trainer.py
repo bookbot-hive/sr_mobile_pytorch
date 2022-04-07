@@ -43,7 +43,7 @@ class GANTrainer:
         self.generator = self.generator.to(self.device)
 
         self.discriminator = resnet18(pretrained=True)
-        self.discriminator.fc = nn.Linear(self.discriminator.fc.in_features, 2)
+        self.discriminator.fc = nn.Linear(self.discriminator.fc.in_features, 1)
         self.discriminator = self.discriminator.to(self.device)
 
         self.pixelwise_loss = L1Loss()
@@ -65,6 +65,9 @@ class GANTrainer:
     def fit(self):
         for epoch in range(self.training_args["epochs"]):
             epoch_perceptual_loss, epoch_discriminator_loss = 0.0, 0.0
+            self.generator.train()
+            self.discriminator.train()
+
             for lr, hr in tqdm(self.train_loader, total=len(self.train_loader)):
                 lr, hr = lr.to(self.device), hr.to(self.device)
                 sr = self.generator(lr)
@@ -74,7 +77,6 @@ class GANTrainer:
 
                 hr_out = self.discriminator(imagenet_normalize(hr))
                 sr_out = self.discriminator(imagenet_normalize(sr.detach()))
-                print(sr_out)
 
                 dis_loss = self.gan_loss.discriminator_loss(hr_out, sr_out)
                 dis_loss.backward()
