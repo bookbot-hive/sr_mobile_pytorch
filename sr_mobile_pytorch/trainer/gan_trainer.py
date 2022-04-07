@@ -72,9 +72,9 @@ class GANTrainer:
                 # train discriminator
                 self.opt_d.zero_grad()
 
-                # TODO: divide everything by 255???
                 hr_out = self.discriminator(imagenet_normalize(hr))
                 sr_out = self.discriminator(imagenet_normalize(sr.detach()))
+                print(sr_out)
 
                 dis_loss = self.gan_loss.discriminator_loss(hr_out, sr_out)
                 dis_loss.backward()
