@@ -45,8 +45,7 @@ class GANTrainer:
 
         self.pixelwise_loss = L1Loss()
         self.content_loss = ContentLoss(self.device)
-        self.generator_loss = GANLoss.generator_loss
-        self.discriminator_loss = GANLoss.discriminator_loss
+        self.gan_loss = GANLoss()
 
         self.opt_d = torch.optim.Adam(
             self.discriminator.parameters(),
@@ -73,8 +72,8 @@ class GANTrainer:
                 hr_out = self.discriminator(hr)
                 sr_out = self.discriminator(sr)
 
-                gen_loss = self.generator_loss(sr_out)
-                dis_loss = self.discriminator_loss(hr_out, sr_out)
+                gen_loss = self.gan_loss.generator_loss(sr_out)
+                dis_loss = self.gan_loss.discriminator_loss(hr_out, sr_out)
 
                 con_loss = self.content_loss(hr, sr)
                 perc_loss = con_loss + 0.001 * gen_loss
