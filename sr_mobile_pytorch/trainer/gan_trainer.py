@@ -64,6 +64,8 @@ class GANTrainer:
         for epoch in range(self.training_args["epochs"]):
             epoch_perceptual_loss, epoch_discriminator_loss = 0.0, 0.0
             for lr, hr in tqdm(self.train_loader, total=len(self.train_loader)):
+                lr, hr = lr.to(self.device), hr.to(self.device)
+
                 self.opt_g.zero_grad()
                 self.opt_d.zero_grad()
 
