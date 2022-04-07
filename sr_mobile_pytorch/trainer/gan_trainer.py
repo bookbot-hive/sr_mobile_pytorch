@@ -4,13 +4,13 @@ import torch.nn as nn
 from torch.nn import L1Loss
 from torch.utils.data import DataLoader
 from torch.optim import Adam
-from torchvision.models import resnet34
+from torchvision.models import resnet18
 from tqdm.auto import tqdm
 import wandb
 
 from sr_mobile_pytorch.model import AnchorBasedPlainNet
 from sr_mobile_pytorch.trainer.metrics import calculate_psnr
-from sr_mobile_pytorch.trainer.utils import seed_everything, logger, imagenet_normalize
+from sr_mobile_pytorch.trainer.utils import seed_everything, logger
 from sr_mobile_pytorch.trainer.losses import ContentLoss, GANLoss
 
 
@@ -42,7 +42,7 @@ class GANTrainer:
         )
         self.generator = self.generator.to(self.device)
 
-        self.discriminator = resnet34(pretrained=True)
+        self.discriminator = resnet18()
         self.discriminator.fc = nn.Linear(self.discriminator.fc.in_features, 1)
         self.discriminator = self.discriminator.to(self.device)
 
@@ -50,11 +50,11 @@ class GANTrainer:
         self.content_loss = ContentLoss(self.device)
         self.gan_loss = GANLoss()
 
-        self.opt_d = torch.optim.Adam(
+        self.opt_d = Adam(
             self.discriminator.parameters(),
             lr=training_args["discriminator_learning_rate"],
         )
-        self.opt_g = torch.optim.Adam(
+        self.opt_g = Adam(
             self.generator.parameters(), lr=training_args["generator_learning_rate"]
         )
 
@@ -75,8 +75,8 @@ class GANTrainer:
                 # train discriminator
                 self.opt_d.zero_grad()
 
-                hr_out = self.discriminator(imagenet_normalize(hr))
-                sr_out = self.discriminator(imagenet_normalize(sr.detach()))
+                hr_out = self.discriminator(hr)
+                sr_out = self.discriminator(sr.detach())
 
                 dis_loss = self.gan_loss.discriminator_loss(hr_out, sr_out)
                 dis_loss.backward()
@@ -85,7 +85,7 @@ class GANTrainer:
                 # train generator
                 self.opt_g.zero_grad()
 
-                sr_out = self.discriminator(imagenet_normalize(sr))
+                sr_out = self.discriminator(sr)
                 gen_loss = self.gan_loss.generator_loss(sr_out)
                 con_loss = self.content_loss(hr, sr)
                 perc_loss = con_loss + 0.001 * gen_loss
