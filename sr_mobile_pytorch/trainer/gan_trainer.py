@@ -83,6 +83,7 @@ class GANTrainer:
                 self.opt_g.zero_grad()
 
                 sr_out = self.discriminator(sr)
+                print(f"SR Out: {sr_out}")
                 gen_loss = self.gan_loss.generator_loss(sr_out)
                 con_loss = self.content_loss(hr, sr)
                 perc_loss = con_loss + 0.001 * gen_loss
@@ -90,8 +91,7 @@ class GANTrainer:
                 perc_loss.backward()
                 self.opt_g.step()
 
-                print(perc_loss.item())
-                print(dis_loss.item())
+                print(f"Perc Loss: {perc_loss.item()}, Disc Loss: {dis_loss.item()}")
 
                 epoch_perceptual_loss += perc_loss.item()
                 epoch_discriminator_loss += dis_loss.item()

@@ -8,12 +8,11 @@ class ContentLoss(nn.Module):
         super().__init__()
         self.device = device
         self.mse_loss = nn.MSELoss()
-        self.vgg = torch.hub.load(
-            "pytorch/vision:v0.10.0", "vgg19", pretrained=True
-        ).to(self.device)
-        for param in self.vgg.parameters():
+        self.vgg = torch.hub.load("pytorch/vision:v0.10.0", "vgg19", pretrained=True)
+        self.model = nn.Sequential(*[self.vgg.features[i] for i in range(36)]).eval()
+        for param in self.model.parameters():
             param.requires_grad = False
-        self.model = self.vgg.features.eval()
+        self.model = self.model.to(device)
 
     def preprocess_input(self, x):
         normalize = transforms.Normalize(
@@ -39,4 +38,5 @@ class GANLoss:
     def discriminator_loss(self, hr_out, sr_out):
         hr_loss = self.bce_loss(torch.ones_like(hr_out), hr_out)
         sr_loss = self.bce_loss(torch.zeros_like(sr_out), sr_out)
+        print(f"hr loss: {hr_loss}, sr loss: {sr_loss}")
         return hr_loss + sr_loss
