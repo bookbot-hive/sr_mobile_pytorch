@@ -1,5 +1,6 @@
 import os
 import torch
+import torch.nn as nn
 from torch.nn import L1Loss
 from torch.utils.data import DataLoader
 from torch.optim import Adam
@@ -41,7 +42,9 @@ class GANTrainer:
         )
         self.generator = self.generator.to(self.device)
 
-        self.discriminator = resnet18(pretrained=True).to(self.device)
+        self.discriminator = resnet18(pretrained=True)
+        self.discriminator.fc = nn.Linear(self.discriminator.fc.in_features, 2)
+        self.discriminator = self.discriminator.to(self.device)
 
         self.pixelwise_loss = L1Loss()
         self.content_loss = ContentLoss(self.device)

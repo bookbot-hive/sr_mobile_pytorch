@@ -1,5 +1,5 @@
 import torch
-from torch import nn
+import torch.nn as nn
 import torchvision.transforms as transforms
 
 
