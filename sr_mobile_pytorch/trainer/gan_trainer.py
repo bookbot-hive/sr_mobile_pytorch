@@ -1,14 +1,12 @@
 import os
 import torch
-import torch.nn as nn
 from torch.nn import L1Loss
 from torch.utils.data import DataLoader
 from torch.optim import Adam
-from torchvision.models import resnet18
 from tqdm.auto import tqdm
 import wandb
 
-from sr_mobile_pytorch.model import AnchorBasedPlainNet
+from sr_mobile_pytorch.model import AnchorBasedPlainNet, DCGANDiscriminator
 from sr_mobile_pytorch.trainer.metrics import calculate_psnr
 from sr_mobile_pytorch.trainer.utils import seed_everything, logger
 from sr_mobile_pytorch.trainer.losses import ContentLoss, GANLoss
@@ -42,9 +40,7 @@ class GANTrainer:
         )
         self.generator = self.generator.to(self.device)
 
-        self.discriminator = resnet18()
-        self.discriminator.fc = nn.Linear(self.discriminator.fc.in_features, 1)
-        self.discriminator = self.discriminator.to(self.device)
+        self.discriminator = DCGANDiscriminator(features_d=4).to(self.device)
 
         self.pixelwise_loss = L1Loss()
         self.content_loss = ContentLoss(self.device)
