@@ -97,7 +97,7 @@ class GANTrainer:
                 content_loss = self.content_loss(hr, sr)
                 pixelwise_loss = self.pixelwise_loss(hr, sr)
                 perceptual_loss = (
-                    content_loss + 0.1 * generator_loss + 0.1 * pixelwise_loss
+                    content_loss + 0.001 * generator_loss + 0.1 * pixelwise_loss
                 )
 
                 perceptual_loss.backward()
