@@ -68,7 +68,9 @@ class GANTrainer:
 
     def fit(self):
         for epoch in range(self.training_args["epochs"]):
-            epoch_perceptual_loss, epoch_discriminator_loss = 0.0, 0.0
+            epoch_generator_loss, epoch_discriminator_loss = 0.0, 0.0
+            epoch_content_loss, epoch_pixelwise_loss = 0.0, 0.0
+            epoch_perceptual_loss = 0.0
             self.generator.train()
             self.discriminator.train()
 
@@ -102,24 +104,33 @@ class GANTrainer:
                 self.opt_g.step()
                 self.scheduler_g.step()
 
-                epoch_perceptual_loss += perceptual_loss.item()
+                epoch_generator_loss += generator_loss.item()
                 epoch_discriminator_loss += discriminator_loss.item()
+                epoch_content_loss += content_loss.item()
+                epoch_pixelwise_loss += pixelwise_loss.item()
+                epoch_perceptual_loss += perceptual_loss.item()
 
-            train_perceptual_loss = epoch_perceptual_loss / len(self.train_loader)
+            train_generator_loss = epoch_generator_loss / len(self.train_loader)
             train_discriminator_loss = epoch_discriminator_loss / len(self.train_loader)
+            train_content_loss = epoch_content_loss / len(self.train_loader)
+            train_pixelwise_loss = epoch_pixelwise_loss / len(self.train_loader)
+            train_perceptual_loss = epoch_perceptual_loss / len(self.train_loader)
             test_loss, test_psnr = self.evaluate()
 
             self.save_best_model(test_loss, test_psnr)
             self.report_results(
-                train_perceptual_loss,
+                train_generator_loss,
                 train_discriminator_loss,
+                train_content_loss,
+                train_pixelwise_loss,
+                train_perceptual_loss,
                 test_loss,
                 test_psnr,
                 epoch + 1,
             )
 
             logger.info(
-                f"Epoch: {epoch:4} | Train Perceptual Loss: {train_perceptual_loss:.4f} | Train Discriminator Loss: {train_discriminator_loss:.4f} | Test Pixelwise Loss: {test_loss:.4f} | PSNR: {test_psnr:.2f}"
+                f"Epoch: {epoch:4} | Train Generator Loss: {train_generator_loss:.4f} | Train Discriminator Loss: {train_discriminator_loss:.4f} | Train Content Loss: {train_content_loss:.4f} | Train Pixelwise Loss: {train_pixelwise_loss:.4f} | Train Perceptual Loss: {train_perceptual_loss:.4f} | Test Pixelwise Loss: {test_loss:.4f} | PSNR: {test_psnr:.2f}"
             )
 
     def evaluate(self):
@@ -145,16 +156,22 @@ class GANTrainer:
 
     def report_results(
         self,
-        train_perceptual_loss,
+        train_generator_loss,
         train_discriminator_loss,
+        train_content_loss,
+        train_pixelwise_loss,
+        train_perceptual_loss,
         test_loss,
         test_psnr,
         step,
     ):
         wandb.log(
             {
-                "train-perceptual-loss": train_perceptual_loss,
+                "train-generator-loss": train_generator_loss,
                 "train-discriminator-loss": train_discriminator_loss,
+                "train-content-loss": train_content_loss,
+                "train-pixelwise-loss": train_pixelwise_loss,
+                "train-perceptual-loss": train_perceptual_loss,
                 "test-pixelwise-loss": test_loss,
                 "test-psnr": test_psnr,
             },
