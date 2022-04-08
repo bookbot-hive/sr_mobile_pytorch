@@ -110,7 +110,7 @@ class GANTrainer:
                 epoch_pixelwise_loss += pixelwise_loss.item()
                 epoch_perceptual_loss += perceptual_loss.item()
 
-            train_generator_loss = epoch_discriminator_loss / len(self.train_loader)
+            train_generator_loss = epoch_generator_loss / len(self.train_loader)
             train_discriminator_loss = epoch_discriminator_loss / len(self.train_loader)
             train_content_loss = epoch_content_loss / len(self.train_loader)
             train_pixelwise_loss = epoch_pixelwise_loss / len(self.train_loader)
