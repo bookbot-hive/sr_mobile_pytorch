@@ -82,8 +82,8 @@ class GANTrainer:
                 hr_out = self.discriminator(hr)
                 sr_out = self.discriminator(sr.detach())
 
-                dis_loss = self.gan_loss.discriminator_loss(hr_out, sr_out)
-                dis_loss.backward()
+                discriminator_loss = self.gan_loss.discriminator_loss(hr_out, sr_out)
+                discriminator_loss.backward()
                 self.opt_d.step()
                 self.scheduler_d.step()
 
@@ -91,19 +91,19 @@ class GANTrainer:
                 self.opt_g.zero_grad()
 
                 sr_out = self.discriminator(sr)
-                gen_loss = self.gan_loss.generator_loss(sr_out)
-                con_loss = self.content_loss(hr, sr)
-                # pixelwise_loss = self.pixelwise_loss(hr, sr)
-                # perc_loss = 10 * con_loss + 0.1 * gen_loss + 0.1 * pixelwise_loss
+                generator_loss = self.gan_loss.generator_loss(sr_out)
+                content_loss = self.content_loss(hr, sr)
+                pixelwise_loss = self.pixelwise_loss(hr, sr)
+                perceptual_loss = (
+                    content_loss + 0.1 * generator_loss + 0.1 * pixelwise_loss
+                )
 
-                perc_loss = con_loss + 0.001 * gen_loss
-
-                perc_loss.backward()
+                perceptual_loss.backward()
                 self.opt_g.step()
                 self.scheduler_g.step()
 
-                epoch_perceptual_loss += perc_loss.item()
-                epoch_discriminator_loss += dis_loss.item()
+                epoch_perceptual_loss += perceptual_loss.item()
+                epoch_discriminator_loss += discriminator_loss.item()
 
             train_perceptual_loss = epoch_perceptual_loss / len(self.train_loader)
             train_discriminator_loss = epoch_discriminator_loss / len(self.train_loader)
