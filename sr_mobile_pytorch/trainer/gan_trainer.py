@@ -3,6 +3,7 @@ import torch
 from torch.nn import L1Loss
 from torch.utils.data import DataLoader
 from torch.optim import Adam
+from torch.optim.lr_scheduler import StepLR
 from tqdm.auto import tqdm
 import wandb
 
@@ -54,6 +55,11 @@ class GANTrainer:
             self.generator.parameters(), lr=training_args["generator_learning_rate"]
         )
 
+        num_training_steps = len(self.train_loader) * training_args["epochs"]
+        step_size = num_training_steps // 2
+        self.scheduler_d = StepLR(self.opt_d, step_size=step_size, gamma=0.1)
+        self.scheduler_g = StepLR(self.opt_g, step_size=step_size, gamma=0.1)
+
         self.state = {"best_psnr": None, "best_loss": None}
         wandb.watch(self.generator)
         wandb.watch(self.discriminator)
@@ -77,6 +83,7 @@ class GANTrainer:
                 dis_loss = self.gan_loss.discriminator_loss(hr_out, sr_out)
                 dis_loss.backward()
                 self.opt_d.step()
+                self.scheduler_d.step()
 
                 # train generator
                 self.opt_g.zero_grad()
@@ -88,6 +95,7 @@ class GANTrainer:
 
                 perc_loss.backward()
                 self.opt_g.step()
+                self.scheduler_g.step()
 
                 epoch_perceptual_loss += perc_loss.item()
                 epoch_discriminator_loss += dis_loss.item()
