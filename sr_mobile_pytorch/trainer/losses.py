@@ -8,7 +8,7 @@ class ContentLoss(nn.Module):
     def __init__(self, device):
         super().__init__()
         self.device = device
-        self.mse_loss = nn.MSELoss()
+        self.mae_loss = nn.L1Loss()
         self.vgg = torch.hub.load("pytorch/vision:v0.10.0", "vgg19", pretrained=True)
         self.model = nn.Sequential(*[self.vgg.features[i] for i in range(36)]).eval()
         for param in self.model.parameters():
@@ -18,9 +18,9 @@ class ContentLoss(nn.Module):
     def forward(self, hr, sr):
         sr = imagenet_normalize(sr)
         hr = imagenet_normalize(hr)
-        sr_features = self.model(sr) / 12.75
-        hr_features = self.model(hr) / 12.75
-        return self.mse_loss(hr_features, sr_features)
+        sr_features = self.model(sr)
+        hr_features = self.model(hr)
+        return self.mae_loss(hr_features, sr_features)
 
 
 class GANLoss:

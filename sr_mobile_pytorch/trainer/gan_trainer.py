@@ -91,7 +91,8 @@ class GANTrainer:
                 sr_out = self.discriminator(sr)
                 gen_loss = self.gan_loss.generator_loss(sr_out)
                 con_loss = self.content_loss(hr, sr)
-                perc_loss = con_loss + 0.001 * gen_loss
+                pixelwise_loss = self.pixelwise_loss(hr, sr)
+                perc_loss = 10 * con_loss + 0.1 * gen_loss + 0.1 * pixelwise_loss
 
                 perc_loss.backward()
                 self.opt_g.step()
