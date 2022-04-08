@@ -10,7 +10,7 @@ import wandb
 from sr_mobile_pytorch.model import AnchorBasedPlainNet, DCGANDiscriminator
 from sr_mobile_pytorch.trainer.metrics import calculate_psnr
 from sr_mobile_pytorch.trainer.utils import seed_everything, logger
-from sr_mobile_pytorch.trainer.losses import ContentLoss, GANLoss
+from sr_mobile_pytorch.trainer.losses import ContentLossResNetSimCLR, GANLoss
 
 
 class GANTrainer:
@@ -44,7 +44,9 @@ class GANTrainer:
         self.discriminator = DCGANDiscriminator(features_d=4).to(self.device)
 
         self.pixelwise_loss = L1Loss()
-        self.content_loss = ContentLoss(self.device)
+        self.content_loss = ContentLossResNetSimCLR(
+            training_args["resnet_weights"], self.device
+        )
         self.gan_loss = GANLoss()
 
         self.opt_d = Adam(
@@ -91,8 +93,10 @@ class GANTrainer:
                 sr_out = self.discriminator(sr)
                 gen_loss = self.gan_loss.generator_loss(sr_out)
                 con_loss = self.content_loss(hr, sr)
-                pixelwise_loss = self.pixelwise_loss(hr, sr)
-                perc_loss = 10 * con_loss + 0.1 * gen_loss + 0.1 * pixelwise_loss
+                # pixelwise_loss = self.pixelwise_loss(hr, sr)
+                # perc_loss = 10 * con_loss + 0.1 * gen_loss + 0.1 * pixelwise_loss
+
+                perc_loss = con_loss + 0.001 * gen_loss
 
                 perc_loss.backward()
                 self.opt_g.step()

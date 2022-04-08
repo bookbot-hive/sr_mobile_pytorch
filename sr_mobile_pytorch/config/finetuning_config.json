@@ -21,6 +21,7 @@
 		"outdir": "experiments",
 		"data_hr": "data/train_HR",
 		"data_lr": "data/train_LR/X4",
-		"generator_weights": "experiments/generator/best_psnr.pth"
+		"generator_weights": "experiments/generator/best_psnr.pth",
+		"resnet_weights": "../simclr-bookbot-illustrations/checkpoint_0100.pth.tar"
 	}
 }
