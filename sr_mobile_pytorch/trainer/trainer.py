@@ -11,6 +11,7 @@ from sr_mobile_pytorch.model import AnchorBasedPlainNet
 from sr_mobile_pytorch.trainer.schedulers import get_linear_schedule_with_warmup
 from sr_mobile_pytorch.trainer.metrics import calculate_psnr
 from sr_mobile_pytorch.trainer.utils import seed_everything, logger
+from sr_mobile_pytorch.trainer.losses import ContentLossResNetSimCLR
 
 
 class Trainer:
@@ -37,7 +38,10 @@ class Trainer:
         self.model = AnchorBasedPlainNet(**model_args)
         self.model = self.model.to(self.device)
 
-        self.criterion = L1Loss()
+        self.pixelwise_loss = L1Loss()
+        self.content_loss = ContentLossResNetSimCLR(
+            training_args["resnet_weights"], self.device
+        )
         self.optimizer = Adam(
             self.model.parameters(),
             training_args["learning_rate"],
@@ -55,30 +59,46 @@ class Trainer:
 
     def fit(self):
         for epoch in range(self.training_args["epochs"]):
-            epoch_loss = 0.0
+            epoch_content_loss, epoch_pixelwise_loss = 0.0, 0.0
+            epoch_perceptual_loss = 0.0
             self.model.train()
 
             for lr, hr in tqdm(self.train_loader, total=len(self.train_loader)):
                 lr, hr = lr.to(self.device), hr.to(self.device)
 
                 self.optimizer.zero_grad()
-                output = self.model(lr)
+                sr = self.model(lr)
 
-                loss = self.criterion(output, hr)
-                epoch_loss += loss.item()
-                loss.backward()
+                pixelwise_loss = self.pixelwise_loss(sr, hr)
+                content_loss = self.content_loss(hr, sr)
+                perceptual_loss = content_loss + pixelwise_loss
+
+                perceptual_loss.backward()
 
                 self.optimizer.step()
                 self.scheduler.step()
 
-            train_loss = epoch_loss / len(self.train_loader)
+                epoch_pixelwise_loss += pixelwise_loss.item()
+                epoch_content_loss += content_loss.item()
+                epoch_perceptual_loss += perceptual_loss.item()
+
+            train_content_loss = epoch_content_loss / len(self.train_loader)
+            train_pixelwise_loss = epoch_pixelwise_loss / len(self.train_loader)
+            train_perceptual_loss = epoch_perceptual_loss / len(self.train_loader)
             test_loss, test_psnr = self.evaluate()
 
             self.save_best_model(test_loss, test_psnr)
-            self.report_results(train_loss, test_loss, test_psnr, epoch + 1)
+            self.report_results(
+                train_content_loss,
+                train_pixelwise_loss,
+                train_perceptual_loss,
+                test_loss,
+                test_psnr,
+                epoch + 1,
+            )
 
             logger.info(
-                f"Epoch: {epoch:4} | Train Loss: {train_loss:.4f} | Test Loss: {test_loss:.4f} | PSNR: {test_psnr:.2f}"
+                f"Epoch: {epoch:4} | Train Content Loss: {train_content_loss:.4f} | Train Pixelwise Loss: {train_pixelwise_loss:.4f} | Train Perceptual Loss: {train_perceptual_loss:.4f} | Test Loss: {test_loss:.4f} | PSNR: {test_psnr:.2f}"
             )
 
     def evaluate(self):
@@ -89,11 +109,11 @@ class Trainer:
             for lr, hr in tqdm(self.test_loader, total=len(self.test_loader)):
                 lr, hr = lr.to(self.device), hr.to(self.device)
 
-                output = self.model(lr)
+                sr = self.model(lr)
 
-                loss = self.criterion(output, hr)
+                loss = self.pixelwise_loss(sr, hr)
                 total_psnr += calculate_psnr(
-                    output.cpu().detach().numpy(), hr.cpu().detach().numpy()
+                    sr.cpu().detach().numpy(), hr.cpu().detach().numpy()
                 )
                 total_loss += loss.item()
 
@@ -102,9 +122,23 @@ class Trainer:
 
             return test_loss, test_psnr
 
-    def report_results(self, train_loss, test_loss, test_psnr, step):
+    def report_results(
+        self,
+        train_content_loss,
+        train_pixelwise_loss,
+        train_perceptual_loss,
+        test_loss,
+        test_psnr,
+        step,
+    ):
         wandb.log(
-            {"train-loss": train_loss, "test-loss": test_loss, "test-psnr": test_psnr},
+            {
+                "train-content-loss": train_content_loss,
+                "train-pixelwise-loss": train_pixelwise_loss,
+                "train-perceptual-loss": train_perceptual_loss,
+                "test-pixelwise-loss": test_loss,
+                "test-psnr": test_psnr,
+            },
             step=step,
         )
 
