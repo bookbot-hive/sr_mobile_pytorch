@@ -1,1 +1,1 @@
-python sr_mobile_pytorch/pretrai.py
+python sr_mobile_pytorch/pretrain.py
