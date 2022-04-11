@@ -48,7 +48,7 @@ class ContentLossResNetSimCLR(nn.Module):
 
     def save_outputs_hook(self, layer_id):
         def fn(_, __, output):
-            self._features[layer_id] = output
+            self._features[layer_id] = output.detach()
 
         return fn
 
