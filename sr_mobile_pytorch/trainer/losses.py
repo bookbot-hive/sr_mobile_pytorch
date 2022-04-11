@@ -71,7 +71,7 @@ class ContentLossResNetSimCLR(nn.Module):
         sr_features = copy.deepcopy(self._features)
         self.model(hr)
         hr_features = copy.deepcopy(self._features)
-        loss = torch.tensor(0.0)
+        loss = torch.tensor(0.0).to(self.device)
         for layer in self.layers:
             loss += self.mae_loss(sr_features[layer], hr_features[layer])
         return loss
