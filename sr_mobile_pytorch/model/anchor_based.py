@@ -66,3 +66,15 @@ class AnchorBasedPlainNet(nn.Module):
         # clamp
         out = torch.clamp(out, min=0.0, max=255.0)
         return out
+
+
+def main():
+    x = torch.rand(1, 3, 256, 256)
+    model = AnchorBasedPlainNet(4, 3, 64, 8, 3)
+    output = model(x)
+    print(sum(p.numel() for p in model.parameters()))
+    print(output.shape)
+
+
+if __name__ == "__main__":
+    main()

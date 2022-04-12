@@ -1,0 +1,26 @@
+{
+	"model_args": {
+		"scale": 4,
+		"in_channels": 3,
+		"num_feature": 64,
+		"num_encoder": 8,
+		"out_channels": 3
+	},
+	"training_args": {
+		"patch_size": 64,
+		"train_batch_size": 16,
+		"test_size": 0.1,
+		"learning_rate": 1e-3,
+		"weight_decay": 0.0,
+		"warmup_ratio": 0.1,
+		"epochs": 500,
+		"num_workers": 8,
+		"seed": 42,
+		"project": "sr_mobile",
+		"entity": "w11wo",
+		"outdir": "experiments",
+		"data_hr": "data/train_HR",
+		"data_lr": "data/train_LR/X4",
+		"resnet_weights": "../simclr-bookbot-illustrations/checkpoint_0100.pth.tar"
+	}
+}
