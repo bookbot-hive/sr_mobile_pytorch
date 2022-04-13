@@ -4,6 +4,15 @@ from setuptools import find_packages, setup
 with open("README.md") as f:
     long_description = f.read()
 
+install_requires = [
+    "wandb",
+    "pandas",
+    "opencv-python",
+    "tqdm",
+    "numpy==1.22.3",
+    "torch==1.10.2",
+    "torchvision",
+]
 
 if __name__ == "__main__":
     setup(
@@ -16,6 +25,7 @@ if __name__ == "__main__":
         url="https://github.com/w11wo/sr_mobile_pytorch",
         license="Apache License",
         packages=find_packages(),
+        install_requires=install_requires,
         include_package_data=True,
         platforms=["linux", "unix", "windows"],
         python_requires=">=3.6",

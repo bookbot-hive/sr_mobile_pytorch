@@ -1,6 +1,6 @@
 # SR Mobile PyTorch
 
-An unofficial PyTorch port of [NJU-Jet/SR_Mobile_Quantization](https://github.com/NJU-Jet/SR_Mobile_Quantization).
+An unofficial PyTorch port (and subsequent modification) of [NJU-Jet/SR_Mobile_Quantization](https://github.com/NJU-Jet/SR_Mobile_Quantization).
 
 ## Installation
 
@@ -10,14 +10,30 @@ cd sr_mobile_pytorch
 pip install .
 ```
 
-## Training
+## Pre-processing
 
-Modify file paths, config, and training arguments in `sr_mobile_pytorch/config`.
+To begin with, modify file paths, config, and training arguments in `sr_mobile_pytorch/config`. Then, launch the preprocessing script to group images into train and validation sets.
 
 ```bash
-bash scripts/preprocess.sh
-bash scripts/pretrain.sh
-bash scripts/finetune.sh
+sh scripts/preprocess.sh
+```
+
+The process involves finding suitable images for validation, that is, images whose dimensions are exact multiples of 4; i.e. $H \equiv 0 \mod 4$ and $W \equiv 0 \mod 4$. This is to facilitate the PSNR metric calculation.
+
+## Pre-training
+
+We follow a slightly different pre-training regime: incorporating content loss together with pixel-wise L1 loss. This is heavily inspired by fast.ai's super resolution training.
+
+```bash
+sh scripts/pretrain.sh
+```
+
+## Fine-tuning
+
+You can optionally fine-tune the model in a SRGAN-like setting, incorporating additional generator-discriminator loss terms.
+
+```bash
+sh scripts/finetune.sh
 ```
 
 ## Contributors

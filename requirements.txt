@@ -1,7 +1,0 @@
-wandb
-pandas
-opencv-python
-tqdm
-numpy==1.19.5
-torch==1.10.2
-torchvision
