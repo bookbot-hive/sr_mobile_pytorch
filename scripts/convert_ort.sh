@@ -1,0 +1,2 @@
+python -m onnxruntime.tools.convert_onnx_models_to_ort ./experiments/generator_v3/model.onnx --optimization_style Fixed
+python -m onnxruntime.tools.convert_onnx_models_to_ort ./experiments/generator_v3/model.quant.onnx --optimization_style Fixed
