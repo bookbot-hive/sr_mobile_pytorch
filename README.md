@@ -18,7 +18,7 @@ To begin with, modify file paths, config, and training arguments in `sr_mobile_p
 sh scripts/preprocess.sh
 ```
 
-The process involves finding suitable images for validation, that is, images whose dimensions are exact multiples of 4; i.e. $H \equiv 0 \mod 4$ and $W \equiv 0 \mod 4$. This is to facilitate the PSNR metric calculation.
+The process involves finding suitable images for validation, that is, images whose dimensions are exact multiples of 4; i.e. <img src="https://render.githubusercontent.com/render/math?math={\color{white}H \equiv 0 \mod 4}#gh-dark-mode-only"> and <img src="https://render.githubusercontent.com/render/math?math={\color{white}W \equiv 0 \mod 4}#gh-dark-mode-only">. This is to facilitate the PSNR metric calculation.
 
 ## Pre-training
 
