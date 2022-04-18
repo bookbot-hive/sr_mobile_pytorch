@@ -20,7 +20,7 @@
 		"entity": "w11wo",
 		"outdir": "experiments",
 		"data_hr": "data/train_HR",
-		"data_lr": "data/train_LR/X4",
+		"data_lr": "data/train_LR",
 		"resnet_weights": "../simclr-bookbot-illustrations/checkpoint_0100.pth.tar"
 	}
 }

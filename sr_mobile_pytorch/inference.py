@@ -35,7 +35,7 @@ def inference(model_path: str, img_array: np.array) -> np.array:
 
 
 def main():
-    model_path = "./experiments/generator_v3/model.quant.ort"
+    model_path = "./experiments/generator_v3/model.ort"
     path = "./assets"
     save_path = os.path.join(path, "output")
     os.makedirs(save_path, exist_ok=True)
@@ -44,6 +44,9 @@ def main():
     for image_path in tqdm(images):
         img = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
         filename = os.path.basename(image_path)
+
+        if img.ndim == 2:
+            img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 
         if img.shape[2] == 4:
             alpha = img[:, :, 3]  # GRAY

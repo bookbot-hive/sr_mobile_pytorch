@@ -9,7 +9,7 @@ install_requires = [
     "pandas",
     "opencv-python",
     "tqdm",
-    "numpy==1.22.3",
+    "numpy",
     "torch==1.10.2",
     "torchvision",
 ]
