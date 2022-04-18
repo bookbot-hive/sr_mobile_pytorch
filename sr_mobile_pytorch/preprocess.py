@@ -6,6 +6,8 @@ import json
 from glob import glob
 from tqdm.auto import tqdm
 
+from sr_mobile_pytorch.trainer.utils import load_config
+
 
 def train_test_split(df, test_size=0.1):
     valid = []
@@ -29,9 +31,8 @@ def train_test_split(df, test_size=0.1):
 
 
 def main():
-    with open("sr_mobile_pytorch/config.json", "r") as f:
-        config = json.load(f)
-    training_args = config["training_args"]
+    config = "sr_mobile_pytorch/config/pretraining_config.json"
+    _, training_args = load_config(config)
 
     random.seed(training_args["seed"])
 
@@ -39,7 +40,9 @@ def main():
     train_HR = sorted(glob(f"{training_args['data_hr']}/*"))
 
     df = pd.DataFrame(data={"lr": train_LR, "hr": train_HR})
-    train_df, test_df = train_test_split(df, test_size=training_args["test_size"])
+    train_df, test_df = train_test_split(
+        df, test_size=training_args["test_size"], random_state=training_args["seed"]
+    )
 
     outdir = training_args["outdir"]
     datadir = f"{outdir}/data"
