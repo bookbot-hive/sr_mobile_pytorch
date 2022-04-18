@@ -40,9 +40,7 @@ def main():
     train_HR = sorted(glob(f"{training_args['data_hr']}/*"))
 
     df = pd.DataFrame(data={"lr": train_LR, "hr": train_HR})
-    train_df, test_df = train_test_split(
-        df, test_size=training_args["test_size"], random_state=training_args["seed"]
-    )
+    train_df, test_df = train_test_split(df, test_size=training_args["test_size"])
 
     outdir = training_args["outdir"]
     datadir = f"{outdir}/data"
