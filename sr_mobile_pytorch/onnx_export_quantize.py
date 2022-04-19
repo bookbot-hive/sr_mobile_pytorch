@@ -4,7 +4,7 @@ import torch
 
 
 def main():
-    model_checkpoint = "./experiments/generator_v3/model.pth"
+    model_checkpoint = "./experiments/generator_v4/model.pth"
     onnx_model_name = model_checkpoint.replace("pth", "onnx")
     quantized_model_name = model_checkpoint.replace("pth", "quant.onnx")
 
