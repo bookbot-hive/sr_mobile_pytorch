@@ -35,7 +35,7 @@ def inference(model_path: str, img_array: np.array) -> np.array:
 
 
 def main():
-    model_path = "./experiments/generator_v4/model.ort"
+    model_path = "./experiments/generator_minecraft_x4/model.ort"
     path = "./assets"
     save_path = os.path.join(path, "output")
     os.makedirs(save_path, exist_ok=True)
