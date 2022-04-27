@@ -8,7 +8,8 @@ from tqdm.auto import tqdm
 
 def pre_process(img: np.array) -> np.array:
     # H, W, C -> H, W, C
-    img = img[:, :, 0:3]
+    # purposely force images to have alpha channel
+    img = cv2.cvtColor(img[:, :, 0:3], cv2.COLOR_BGR2BGRA)
     # H, W, C-> 1, H, W, C
     img = np.expand_dims(img, axis=0).astype(np.float32)
     return img
@@ -35,7 +36,7 @@ def inference(model_path: str, img_array: np.array) -> np.array:
 
 
 def main():
-    model_path = "./experiments/generator_v4_channel_last/model_channel_last.ort"
+    model_path = "./experiments/generator_v4_channel_last_drop_alpha/model_channel_last_drop_alpha.ort"
     path = "./assets"
     save_path = os.path.join(path, "output")
     os.makedirs(save_path, exist_ok=True)
