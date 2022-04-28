@@ -14,11 +14,16 @@ class AnchorBasedPlainNetChannelLast(nn.Module):
         self.abpn.eval()
 
     def forward(self, x):
-        return self.abpn(torch.permute(x[:, :, :, :3], (0, 3, 1, 2)))
+        output = torch.permute(
+            self.abpn(torch.permute(x[:, :, :, :3], (0, 3, 1, 2))), (0, 2, 3, 1)
+        )
+        n, h, w, c = output.shape
+        alpha = torch.zeros(1, h, w, 1)
+        return torch.concat((output, alpha), dim=3).type(torch.uint8)
 
 
 def main():
-    model_checkpoint = "./experiments/generator_v4_channel_last_drop_alpha/model_channel_last_drop_alpha.pth"
+    model_checkpoint = "./experiments/generator_v4_channel_last_io_drop_alpha/model_channel_last_io_drop_alpha.pth"
     onnx_model_name = model_checkpoint.replace("pth", "onnx")
     quantized_model_name = model_checkpoint.replace("pth", "quant.onnx")
 

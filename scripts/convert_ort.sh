@@ -1,2 +1,2 @@
-python -m onnxruntime.tools.convert_onnx_models_to_ort ./experiments/generator_v4_channel_last/model_channel_last.onnx --optimization_style Fixed
-python -m onnxruntime.tools.convert_onnx_models_to_ort ./experiments/generator_v4_channel_last/model_channel_last.quant.onnx --optimization_style Fixed
+python -m onnxruntime.tools.convert_onnx_models_to_ort ./experiments/generator_v4_channel_last_io_drop_alpha/model_channel_last_io_drop_alpha.onnx --optimization_style Fixed
+python -m onnxruntime.tools.convert_onnx_models_to_ort ./experiments/generator_v4_channel_last_io_drop_alpha/model_channel_last_io_drop_alpha.quant.onnx --optimization_style Fixed
