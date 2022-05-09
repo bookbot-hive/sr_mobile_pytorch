@@ -7,7 +7,7 @@ from sr_mobile_pytorch.trainer.utils import load_config
 
 
 def main():
-    config = "sr_mobile_pytorch/config/pretraining_config.json"
+    config = "sr_mobile_pytorch/config/pretraining_config_x2.json"
     model_args, training_args = load_config(config)
 
     wandb.init(project=training_args["project"], entity=training_args["entity"])

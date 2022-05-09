@@ -16,22 +16,16 @@ def train_test_split(df, scale, test_size=0.1):
         if lr.shape[0] * scale == hr.shape[0] and lr.shape[1] * scale == hr.shape[1]:
             valid.append(row)
 
-    if len(valid) <= (test_size * len(df)):
-        test_df = pd.DataFrame(valid)
-    else:
-        valid = random.sample(valid, int(test_size * len(df)))
-        test_df = pd.DataFrame(valid)
-
-    common = df.merge(test_df, on=["lr", "hr"])
-
-    # source: https://stackoverflow.com/questions/28901683/pandas-get-rows-which-are-not-in-other-dataframe
-    train_df = df[(~df.lr.isin(common.lr)) & (~df.hr.isin(common.hr))]
+    test = random.sample(valid, int(test_size * len(valid)))
+    train = list(set(valid) - set(test))
+    train_df = pd.DataFrame(train, columns=["lr", "hr"])
+    test_df = pd.DataFrame(test, columns=["lr", "hr"])
 
     return train_df, test_df
 
 
 def main():
-    config = "sr_mobile_pytorch/config/pretraining_config.json"
+    config = "sr_mobile_pytorch/config/pretraining_config_x2.json"
     model_args, training_args = load_config(config)
 
     random.seed(training_args["seed"])
