@@ -23,7 +23,9 @@ class AnchorBasedPlainNetChannelLast(nn.Module):
 
 
 def main():
-    model_checkpoint = "./experiments/generator_v4_channel_last_io_drop_alpha/model_channel_last_io_drop_alpha.pth"
+    model_checkpoint = (
+        "./experiments/generator_minecraft_x4_ios/model_minecraft_x4_ios.pth"
+    )
     onnx_model_name = model_checkpoint.replace("pth", "onnx")
     quantized_model_name = model_checkpoint.replace("pth", "quant.onnx")
 

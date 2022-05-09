@@ -1,2 +1,2 @@
-python -m onnxruntime.tools.convert_onnx_models_to_ort ./experiments/generator_v4_channel_last_io_drop_alpha/model_channel_last_io_drop_alpha.onnx --optimization_style Fixed
-python -m onnxruntime.tools.convert_onnx_models_to_ort ./experiments/generator_v4_channel_last_io_drop_alpha/model_channel_last_io_drop_alpha.quant.onnx --optimization_style Fixed
+python -m onnxruntime.tools.convert_onnx_models_to_ort ./experiments/generator_minecraft_x4_android/model_minecraft_x4_android.onnx --optimization_style Fixed
+python -m onnxruntime.tools.convert_onnx_models_to_ort ./experiments/generator_minecraft_x4_android/model_minecraft_x4_android.onnx --optimization_style Fixed
