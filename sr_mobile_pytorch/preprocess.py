@@ -16,10 +16,12 @@ def train_test_split(df, scale, test_size=0.1):
         if lr.shape[0] * scale == hr.shape[0] and lr.shape[1] * scale == hr.shape[1]:
             valid.append(row)
 
-    test = random.sample(valid, int(test_size * len(valid)))
-    train = list(set(valid) - set(test))
-    train_df = pd.DataFrame(train, columns=["lr", "hr"])
-    test_df = pd.DataFrame(test, columns=["lr", "hr"])
+    random.shuffle(valid)
+
+    test = valid[: int(test_size * len(valid))]
+    train = valid[int(test_size * len(valid)) :]
+    train_df = pd.DataFrame(train)
+    test_df = pd.DataFrame(test)
 
     return train_df, test_df
 
