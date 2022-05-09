@@ -9,11 +9,11 @@ from tqdm.auto import tqdm
 from sr_mobile_pytorch.trainer.utils import load_config
 
 
-def train_test_split(df, test_size=0.1):
+def train_test_split(df, scale, test_size=0.1):
     valid = []
     for _, row in tqdm(df.iterrows(), total=len(df)):
         lr, hr = cv2.imread(row["lr"]), cv2.imread(row["hr"])
-        if lr.shape[0] * 4 == hr.shape[0] and lr.shape[1] * 4 == hr.shape[1]:
+        if lr.shape[0] * scale == hr.shape[0] and lr.shape[1] * scale == hr.shape[1]:
             valid.append(row)
 
     if len(valid) <= (test_size * len(df)):
@@ -32,7 +32,7 @@ def train_test_split(df, test_size=0.1):
 
 def main():
     config = "sr_mobile_pytorch/config/pretraining_config.json"
-    _, training_args = load_config(config)
+    model_args, training_args = load_config(config)
 
     random.seed(training_args["seed"])
 
@@ -40,7 +40,9 @@ def main():
     train_HR = sorted(glob(f"{training_args['data_hr']}/*"))
 
     df = pd.DataFrame(data={"lr": train_LR, "hr": train_HR})
-    train_df, test_df = train_test_split(df, test_size=training_args["test_size"])
+    train_df, test_df = train_test_split(
+        df, scale=model_args["scale"], test_size=training_args["test_size"]
+    )
 
     outdir = training_args["outdir"]
     datadir = f"{outdir}/data"
