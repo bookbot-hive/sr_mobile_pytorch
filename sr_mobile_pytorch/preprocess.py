@@ -10,18 +10,23 @@ from sr_mobile_pytorch.trainer.utils import load_config
 
 
 def train_test_split(df, scale, test_size=0.1):
-    valid = []
+    exacts, approx = [], []
     for _, row in tqdm(df.iterrows(), total=len(df)):
         lr, hr = cv2.imread(row["lr"]), cv2.imread(row["hr"])
         if lr.shape[0] * scale == hr.shape[0] and lr.shape[1] * scale == hr.shape[1]:
-            valid.append(row)
+            exacts.append(row)
+        elif lr.shape[1] * scale == hr.shape[1]:
+            approx.append(row)
 
-    random.shuffle(valid)
+    random.shuffle(exacts)
+    total_len = len(exacts) + len(approx)
 
-    test = valid[: int(test_size * len(valid))]
-    train = valid[int(test_size * len(valid)) :]
+    test = exacts[: int(test_size * total_len)]
+    train = exacts[int(test_size * total_len) :] + approx
     train_df = pd.DataFrame(train)
     test_df = pd.DataFrame(test)
+
+    print(f"Train Samples: {len(train_df)} - Test Samples: {len(test_df)}")
 
     return train_df, test_df
 
