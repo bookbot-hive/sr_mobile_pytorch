@@ -10,7 +10,7 @@ install_requires = [
     "opencv-python",
     "tqdm",
     "numpy",
-    "torch==1.10.2",
+    "torch",
     "torchvision",
 ]
 
