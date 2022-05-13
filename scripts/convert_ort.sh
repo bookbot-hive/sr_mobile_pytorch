@@ -1,2 +1,2 @@
-python -m onnxruntime.tools.convert_onnx_models_to_ort ./experiments/generator_x2/model.onnx --optimization_style Fixed
-python -m onnxruntime.tools.convert_onnx_models_to_ort ./experiments/generator_x2/model.onnx --optimization_style Fixed
+python -m onnxruntime.tools.convert_onnx_models_to_ort ./experiments/generator_x2_25/model.onnx --optimization_style Fixed
+python -m onnxruntime.tools.convert_onnx_models_to_ort ./experiments/generator_x2_25/model.onnx --optimization_style Fixed
