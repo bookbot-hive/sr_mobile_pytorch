@@ -1,2 +1,2 @@
-python -m onnxruntime.tools.convert_onnx_models_to_ort ./experiments/generator_minecraft_x4_android/model_minecraft_x4_android.onnx --optimization_style Fixed
-python -m onnxruntime.tools.convert_onnx_models_to_ort ./experiments/generator_minecraft_x4_android/model_minecraft_x4_android.onnx --optimization_style Fixed
+python -m onnxruntime.tools.convert_onnx_models_to_ort ./experiments/generator_x2/model.onnx --optimization_style Fixed
+python -m onnxruntime.tools.convert_onnx_models_to_ort ./experiments/generator_x2/model.onnx --optimization_style Fixed

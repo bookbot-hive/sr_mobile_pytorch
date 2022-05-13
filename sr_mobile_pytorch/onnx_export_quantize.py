@@ -4,12 +4,12 @@ import torch
 
 
 def main():
-    model_checkpoint = "./experiments/generator_minecraft_x4_v2/model.pth"
+    model_checkpoint = "./experiments/generator_x2/model.pth"
     onnx_model_name = model_checkpoint.replace("pth", "onnx")
     quantized_model_name = model_checkpoint.replace("pth", "quant.onnx")
 
     weights = torch.load(model_checkpoint, map_location=torch.device("cpu"))
-    model = AnchorBasedPlainNet()
+    model = AnchorBasedPlainNet(scale=2)
     model.load_state_dict(weights, strict=True)
     model.eval()
 
